@@ -4,7 +4,7 @@ from .models import Flat, Complaint
 
 
 class FlatAdmin(admin.ModelAdmin):
-    list_display = ('address', 'price', 'new_building', 'construction_year')
+    list_display = ('address', 'owners_phonenumber', 'owner_pure_phone', 'price', 'new_building', 'construction_year')
     list_filter = ('new_building', 'rooms_number', 'has_balcony')
     list_editable = ['new_building']
     search_fields = ['town', 'address', 'owner']
