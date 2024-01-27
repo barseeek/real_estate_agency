@@ -6,28 +6,28 @@ from django.db import migrations
 def fill_owner_flats(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
     Owner = apps.get_model('property', 'Owner')
+    flats = Flat.objects.all()
+    if flats.exists():
+        for flat in flats.iterator():
+            owner, created = Owner.objects.get_or_create(name=flat.owner, pure_phone=flat.owner_pure_phone)
+            owner.flats.add(flat)
 
-    for flat in Flat.objects.all():
-        owner, created = Owner.objects.get_or_create(name=flat.owner, pure_phone=flat.owner_pure_phone)
-        owner.flats.add(flat)
-        flat.owners.add(owner)
 
 def move_backward(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
     Owner = apps.get_model('property', 'Owner')
-
-    for flat in Flat.objects.all():
-        owner, created = Owner.objects.get_or_create(name=flat.owner, pure_phone=flat.owner_pure_phone)
-        owner.flats.remove(flat)
-        flat.owners.remove(owner)
+    flats = Flat.objects.all()
+    if flats.exists():
+        for flat in flats.iterator():
+            owner, created = Owner.objects.get_or_create(name=flat.owner, pure_phone=flat.owner_pure_phone)
+            owner.flats.remove(flat)
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('property', '0011_auto_20240121_1513'),
     ]
 
     operations = [
-        migrations.RunPython(fill_owner_flats, move_backward)        
+        migrations.RunPython(fill_owner_flats, move_backward)
     ]

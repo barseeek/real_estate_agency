@@ -6,11 +6,13 @@ from django.db import migrations
 def fill_owner(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
     Owner = apps.get_model('property', 'Owner')    
-    for flat in Flat.objects.all():
-        Owner.objects.get_or_create(
-            name=flat.owner,
-            phone_number=flat.owners_phonenumber,
-            pure_phone=flat.owner_pure_phone)
+    flats = Flat.objects.all()
+    if flats.exists():
+        for flat in flats.iterator():
+            Owner.objects.get_or_create(
+                name=flat.owner,
+                phone_number=flat.owners_phonenumber,
+                pure_phone=flat.owner_pure_phone)
 
 
 class Migration(migrations.Migration):
