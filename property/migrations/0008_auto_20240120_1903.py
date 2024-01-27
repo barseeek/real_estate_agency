@@ -11,9 +11,8 @@ def format_phonenumber(apps, schema_editor):
     if flats.exists():
         for flat in flats.iterator():
             parsed_number = phonenumbers.parse(flat.owners_phonenumber, 'RU')
-            if phonenumbers.is_valid_number(parsed_number):
-                flat.owner_pure_phone = parsed_number
-            else:
+            flat.owner_pure_phone = parsed_number
+            if not phonenumbers.is_valid_number(parsed_number):
                 flat.owner_pure_phone = None
             flat.save()
 
